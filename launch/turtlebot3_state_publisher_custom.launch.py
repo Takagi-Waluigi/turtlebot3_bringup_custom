@@ -39,12 +39,12 @@ def generate_launch_description():
         #<<編集箇所-4
         DeclareLaunchArgument(
             'namespace',
-            default_value=namespace,
+            default_value=ROS_NAMESPACE,
             description='Specifying namespace of robot'),  
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
-            namespace=namespace, #<<編集箇所-5
+            namespace=ROS_NAMESPACE, #<<編集箇所-5
             output='screen',
             parameters=[rsp_params, {'use_sim_time': use_sim_time}],
             remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')],
