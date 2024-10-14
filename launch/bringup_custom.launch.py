@@ -37,6 +37,8 @@ def generate_launch_description():
     use_vodom = LaunchConfiguration('use_vodom', default=False)
 
     use_tracking = LaunchConfiguration('use_tracking', default=False)
+
+    use_sound = LaunchConfiguration('use_sound', default=False)
     
     scan_frame_id = 'base_scan' #<<編集箇所-4
 
@@ -112,6 +114,13 @@ def generate_launch_description():
             condition=IfCondition(use_tracking),
             package='ros2_realsense_yolo',
             namespace=ROS_NAMESPACE, #<<編集箇所-7
-            executable='pose_publisher',
+            executable='laser_publisher',
+            output='screen'),
+
+        Node(
+            condition=IfCondition(use_sound),
+            package='play_sound',
+            #namespace=ROS_NAMESPACE, #<<編集箇所-7
+            executable='play_sound',
             output='screen'),
     ])
