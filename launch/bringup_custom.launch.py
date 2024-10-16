@@ -16,6 +16,7 @@ def generate_launch_description():
     LDS_MODEL = os.environ['LDS_MODEL']
     LDS_LAUNCH_FILE = '/hlds_laser_custom.launch.py'
     ROS_NAMESPACE = os.environ['ROS_NAMESPACE'] #<<編集箇所-1
+    LASER_FILTER_LAUNCH_FILE = '/range_filter_custom.launch.py'
 
     usb_port = LaunchConfiguration('usb_port', default='/dev/ttyACM0')
     tb3_param_dir = LaunchConfiguration(
@@ -73,6 +74,11 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([ThisLaunchFileDir(), LDS_LAUNCH_FILE]),
             launch_arguments={'port': '/dev/ttyUSB0', 'frame_id': scan_frame_id, 'namespace': ROS_NAMESPACE}.items(), #<<編集箇所-6
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([ThisLaunchFileDir(), LASER_FILTER_LAUNCH_FILE]),
+            launch_arguments={'namespace': ROS_NAMESPACE}.items(), #<<編集箇所-6
         ),
 
         #車輪オドメトリを使用する場合のLaunch
