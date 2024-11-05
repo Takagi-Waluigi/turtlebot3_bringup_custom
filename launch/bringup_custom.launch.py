@@ -16,7 +16,7 @@ def generate_launch_description():
     LDS_MODEL = os.environ['LDS_MODEL']
     LDS_LAUNCH_FILE = '/hlds_laser_custom.launch.py'
     ROS_NAMESPACE = os.environ['ROS_NAMESPACE'] #<<編集箇所-1
-    LASER_FILTER_LAUNCH_FILE = '/range_filter_custom.launch.py'
+    LASER_FILTER_LAUNCH_FILE = '/box_filter_custom.launch.py'
 
     usb_port = LaunchConfiguration('usb_port', default='/dev/ttyACM0')
     tb3_param_dir = LaunchConfiguration(
@@ -66,9 +66,9 @@ def generate_launch_description():
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/t265_custom.launch.py']),
-            launch_arguments={'use_vodom': use_vodom, 'namespace': ROS_NAMESPACE}.items(),
-            condition=IfCondition(use_vodom),
+           PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/t265_custom.launch.py']),
+           launch_arguments={'use_vodom': use_vodom, 'camera_name': ROS_NAMESPACE}.items(),
+           condition=IfCondition(use_vodom),
         ),
 
         IncludeLaunchDescription(
@@ -111,7 +111,7 @@ def generate_launch_description():
         Node(
             condition=IfCondition(use_vodom),
             package='odom_converter',
-            executable='odom_converter_namespaced', #<<編集箇所-7
+            executable='odom_converter', #<<編集箇所-7
             namespace=ROS_NAMESPACE, #<<編集箇所-7
             output='screen',
             remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')]),            

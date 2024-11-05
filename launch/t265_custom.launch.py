@@ -28,8 +28,8 @@ configurable_parameters = [{'name': 'camera_name',                  'default': '
                            {'name': 'enable_infra2',                'default': 'false', 'description': 'enable infra2 stream'},
                            {'name': 'infra_rgb',                    'default': 'false', 'description': 'enable infra2 stream'},
                            {'name': 'tracking_module.profile',      'default': '0,0,0', 'description': 'fisheye width'},
-                           {'name': 'enable_fisheye1',              'default': 'true', 'description': 'enable fisheye1 stream'},
-                           {'name': 'enable_fisheye2',              'default': 'true', 'description': 'enable fisheye2 stream'},
+                           {'name': 'enable_fisheye1',              'default': 'false', 'description': 'enable fisheye1 stream'},
+                           {'name': 'enable_fisheye2',              'default': 'false', 'description': 'enable fisheye2 stream'},
                            {'name': 'enable_confidence',            'default': 'true', 'description': 'enable depth stream'},
                            {'name': 'gyro_fps',                     'default': '0', 'description': "''"},                           
                            {'name': 'accel_fps',                    'default': '0', 'description': "''"},                           
@@ -38,8 +38,6 @@ configurable_parameters = [{'name': 'camera_name',                  'default': '
                            {'name': 'enable_pose',                  'default': 'true', 'description': "''"},                           
                            {'name': 'pose_fps',                     'default': '200', 'description': "''"},                           
                            {'name': 'pointcloud.enable',            'default': 'false', 'description': ''}, 
-                           {'name': 'pointcloud.stream_filter',     'default': '2', 'description': 'texture stream for pointcloud'},
-                           {'name': 'pointcloud.stream_index_filter','default': '0', 'description': 'texture stream index for pointcloud'},
                            {'name': 'enable_sync',                  'default': 'false', 'description': "''"},                           
                            {'name': 'align_depth.enable',           'default': 'false', 'description': "''"},                           
                            {'name': 'colorizer.enable',             'default': 'false', 'description': "''"},
@@ -69,6 +67,7 @@ def set_configurable_parameters(parameters):
     return dict([(param['name'], LaunchConfiguration(param['name'])) for param in parameters])
 
 def generate_launch_description():
+    ROS_NAMESPACE = os.environ['ROS_NAMESPACE'] #<<編集箇所-1
     log_level = 'info'
 
     return LaunchDescription(declare_configurable_parameters(configurable_parameters) + [
@@ -76,11 +75,11 @@ def generate_launch_description():
         launch_ros.actions.Node(
             condition=IfCondition(PythonExpression([LaunchConfiguration('config_file'), " == ''"])),
             package='realsense2_camera',
-            namespace=LaunchConfiguration("camera_name"),
+            namespace=ROS_NAMESPACE,
             name=LaunchConfiguration("camera_name"),
             executable='realsense2_camera_node',
             parameters=[set_configurable_parameters(configurable_parameters)
-                        ,{'serial_no':'929122111463'}, #要修正
+                        ,{'serial_no':'224622110477'}, #要修正
                         ],
             output='screen',
             arguments=['--ros-args', '--log-level', LaunchConfiguration('log_level')],
@@ -90,12 +89,12 @@ def generate_launch_description():
         launch_ros.actions.Node(
             condition=IfCondition(PythonExpression([LaunchConfiguration('config_file'), " != ''"])),
             package='realsense2_camera',
-            namespace=LaunchConfiguration("camera_name"),
+            namespace=ROS_NAMESPACE,
             name=LaunchConfiguration("camera_name"),
             executable='realsense2_camera_node',
             parameters=[set_configurable_parameters(configurable_parameters)
                         , PythonExpression([LaunchConfiguration("config_file")])
-                        , {'serial_no':'929122111463'}, #要修正
+                        , {'serial_no':'224622110477'}, #要修正
                         ],
             output='screen',
             arguments=['--ros-args', '--log-level', LaunchConfiguration('log_level')],
